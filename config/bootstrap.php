@@ -24,9 +24,13 @@ use Whoops\Run;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Error handling
-$whoops = (new Run())
-    ->pushHandler(new PrettyPageHandler())
-    ->register();
+// $whoops = (new Run())
+//     ->pushHandler(new PrettyPageHandler())
+//     ->register();
+
+$whoops = new Run();
+$whoops->pushHandler(new PrettyPageHandler());
+$whoops->register();
 
 // Application & Service Container
 $app = Bridge::create();

@@ -1,2 +1,4 @@
 /.idea/
 /vendor/
+/files/*
+!/files/.gitignore
