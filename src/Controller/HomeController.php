@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Database\FichierManager;
 use App\File\UploadService;
 use Doctrine\DBAL\Connection;
 use Psr\Http\Message\ResponseInterface;
@@ -14,7 +15,7 @@ class HomeController extends AbstractController
         ResponseInterface $response,
         ServerRequestInterface $request,
         UploadService $uploadService,
-        Connection $connection
+        FichierManager $fichierManager
     ) {
         // Récupérer les fichiers envoyés:
         $listeFichiers = $request->getUploadedFiles();
@@ -28,15 +29,36 @@ class HomeController extends AbstractController
             $nouveauNom = $uploadService->saveFile($fichier);
 
             // Enregistrer les infos du fichier en base de données
-            $connection->insert('fichier', [
-                'nom' => $nouveauNom,
-                'nom_original' => $fichier->getClientFilename(),
-            ]);
+            $fichier = $fichierManager->createFichier($nouveauNom, $fichier->getClientFilename());
 
-            // Afficher un message à l'utilisateur
+            // Redirection vers la page de succès
+            return $this->redirect('success', [
+                'id' => $fichier->getId(),
+            ]);
         }
 
         return $this->template($response, 'home.html.twig');
+    }
+
+    /**
+     * Vérifier que l'identifiant (argument $id) correspond à un fichier existant
+     * Si ce n'est pas le cas, rediriger vers une route qui affichera un message d'erreur
+     */
+    public function success(ResponseInterface $response, int $id, FichierManager $fichierManager)
+    {
+        $fichier = $fichierManager->getById($id);
+        if ($fichier === null) {
+            return $this->redirect('file-error');
+        }
+
+        return $this->template($response, 'success.html.twig', [
+            'fichier' => $fichier
+        ]);
+    }
+
+    public function fileError(ResponseInterface $response)
+    {
+        return $this->template($response, 'file_error.html.twig');
     }
 
     public function download(ResponseInterface $response, int $id)

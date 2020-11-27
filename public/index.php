@@ -18,6 +18,16 @@ $app
     ->setName('homepage')
 ;
 
+$app
+    ->get('/success/{id:\d+}', [HomeController::class, 'success'])
+    ->setName('success')
+;
+
+$app
+    ->get('/file-error', [HomeController::class, 'fileError'])
+    ->setName('file-error')
+;
+
 // On peut indiquer des paramètres dans les routes entre accolades: {param}
 // On peut indiquer leur format avec des RegEx: \d+ (constitué d'un ou plusieurs chiffres)
 // Les paramètres seront envoyés en argument de la méthode du controlleur
