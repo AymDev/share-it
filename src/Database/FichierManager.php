@@ -42,7 +42,13 @@ class FichierManager
         }
 
         // Création d'une instance de Fichier
-        return $this->createObject($fichierData['id'], $fichierData['nom'], $fichierData['nom_original'], $fichierData['type']);
+        return $this->createObject(
+            $fichierData['id'],
+            $fichierData['nom'],
+            $fichierData['nom_original'],
+            $fichierData['type'],
+            $fichierData['telechargements']
+        );
     }
 
     /**
@@ -65,9 +71,27 @@ class FichierManager
     }
 
     /**
+     * Mettre à jour un fichier
+     */
+    public function updateFichier(Fichier $fichier): bool
+    {
+        $lignesAffectees = $this->connection->update(
+            'fichier', [
+                'nom' => $fichier->getNom(),
+                'nom_original' => $fichier->getNomOriginal(),
+                'type' => $fichier->getType(),
+                'telechargements' => $fichier->getTelechargements()
+            ], [
+                'id' => $fichier->getId()
+            ]
+        );
+        return $lignesAffectees === 1;
+    }
+
+    /**
      * Créer un objet Fichier à partir de ses informations
      */
-    private function createObject(int $id, string $nom, string $nomOriginal, string $type): Fichier
+    private function createObject(int $id, string $nom, string $nomOriginal, string $type, int $telechargements = 0): Fichier
     {
         $fichier = new Fichier();
         $fichier
@@ -75,6 +99,7 @@ class FichierManager
             ->setNom($nom)
             ->setNomOriginal($nomOriginal)
             ->setType($type)
+            ->setTelechargements($telechargements)
         ;
         return $fichier;
     }

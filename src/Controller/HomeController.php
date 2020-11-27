@@ -68,6 +68,10 @@ class HomeController extends AbstractController
             return $this->redirect('file-error');
         }
 
+        // Incrémenter le nombre de téléchargements
+        $fichier->incrementTelechargements();
+        $fichierManager->updateFichier($fichier);
+
         // Chemin vers le fichier à télécharger
         $path = UploadService::FILES_DIR . '/' . $fichier->getNom();
         if (file_exists($path) === false) {

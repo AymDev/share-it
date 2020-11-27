@@ -18,6 +18,7 @@ class Fichier
     private ?string $nom = null;
     private ?string $nom_original = null;
     private ?string $type = null;
+    private int $telechargements = 0;
 
     public function getId(): ?int
     {
@@ -64,6 +65,23 @@ class Fichier
     public function setType(?string $type): self
     {
         $this->type = $type;
+        return $this;
+    }
+
+    public function getTelechargements(): int
+    {
+        return $this->telechargements;
+    }
+
+    public function setTelechargements(int $telechargements): self
+    {
+        $this->telechargements = $telechargements;
+        return $this;
+    }
+
+    public function incrementTelechargements(): self
+    {
+        $this->telechargements++;
         return $this;
     }
 }
