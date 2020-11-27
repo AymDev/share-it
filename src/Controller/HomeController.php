@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Database\FichierManager;
 use App\File\UploadService;
-use Doctrine\DBAL\Connection;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -29,7 +28,7 @@ class HomeController extends AbstractController
             $nouveauNom = $uploadService->saveFile($fichier);
 
             // Enregistrer les infos du fichier en base de données
-            $fichier = $fichierManager->createFichier($nouveauNom, $fichier->getClientFilename());
+            $fichier = $fichierManager->createFichier($nouveauNom, $fichier->getClientFilename(), $fichier->getClientMediaType());
 
             // Redirection vers la page de succès
             return $this->redirect('success', [
@@ -77,7 +76,9 @@ class HomeController extends AbstractController
 
         // Ajout des en-têtes HTTP pour le téléchargement:
         $contentDisposition = 'attachment;filename=' . $fichier->getNomOriginal();
-        $response = $response->withHeader('Content-Disposition', $contentDisposition);
+        $response = $response
+            ->withHeader('Content-Disposition', $contentDisposition)
+            ->withHeader('Content-Type', $fichier->getType());
 
         // Insertion du contenu du fichier dans le corps de la réponse
         $response->getBody()->write(file_get_contents($path));

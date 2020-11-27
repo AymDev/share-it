@@ -17,6 +17,7 @@ class Fichier
     private ?int $id = null;
     private ?string $nom = null;
     private ?string $nom_original = null;
+    private ?string $type = null;
 
     public function getId(): ?int
     {
@@ -52,6 +53,17 @@ class Fichier
     public function setNomOriginal(string $nom_original): self
     {
         $this->nom_original = $nom_original;
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): self
+    {
+        $this->type = $type;
         return $this;
     }
 }

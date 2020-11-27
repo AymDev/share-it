@@ -42,37 +42,39 @@ class FichierManager
         }
 
         // Création d'une instance de Fichier
-        return $this->createObject($fichierData['id'], $fichierData['nom'], $fichierData['nom_original']);
+        return $this->createObject($fichierData['id'], $fichierData['nom'], $fichierData['nom_original'], $fichierData['type']);
     }
 
     /**
      * Enregistrer un nouveau fichier en base de données
      */
-    public function createFichier(string $nom, string $nomOriginal): Fichier
+    public function createFichier(string $nom, string $nomOriginal, string $type): Fichier
     {
         // Enregistrer en base de données
         $this->connection->insert('fichier', [
             'nom' => $nom,
             'nom_original' => $nomOriginal,
+            'type' => $type,
         ]);
 
         // Récupérer l'identifiant généré du fichier enregistré
         $id = $this->connection->lastInsertId();
 
         // Créer un objet Fichier et le retourner: créer une méthode createObject()
-        return $this->createObject($id, $nom, $nomOriginal);
+        return $this->createObject($id, $nom, $nomOriginal, $type);
     }
 
     /**
      * Créer un objet Fichier à partir de ses informations
      */
-    private function createObject(int $id, string $nom, string $nomOriginal): Fichier
+    private function createObject(int $id, string $nom, string $nomOriginal, string $type): Fichier
     {
         $fichier = new Fichier();
         $fichier
             ->setId($id)
             ->setNom($nom)
             ->setNomOriginal($nomOriginal)
+            ->setType($type)
         ;
         return $fichier;
     }
